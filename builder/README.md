@@ -1,6 +1,6 @@
 # Builder
 
-We want to create a volume so that when gradle downloads dependencies it doesn't need to do it again if the base docker container gets updated.
+We want to create a volume so that when gradle downloads dependencies it doesn't need to do it again if the source folder gets updated.
    ```
    docker volume create gradle-dependencies
    ```
@@ -43,7 +43,7 @@ docker run -ti \
 This ends up building the binary '/build/server/build/libs/server-0.0.1-SNAPSHOT.jar' which then need to be extracted. Subsequent builds will be faster as you don't have to download the dependencies for gradle again. The issue is now you have to exact the binary from the volume or mount the volume in another container to run it.
 
 
-Execute the binary from the volume
+Execute the binary from the volume inside of a small alpine image.
   ```bash
   docker run --rm \
     -p 8080:8080 \

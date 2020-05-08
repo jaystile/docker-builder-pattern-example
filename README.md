@@ -12,8 +12,8 @@ There are a couple of reason why you may want to use a builder pattern
 ## Setup
 At the time of this writing I was running Ubuntu 16.4 and openjdk 14 and gradle 6.3.
 
-# Example 1 - Builder using a stage Docker file
-In the example, we use a stage Dockerfile to build the artifacts and then output a single small container based on the previous stages artifacts. 
+# Example 1 - Builder using a multi-stage Docker file
+In the example, we use a multi-stage Dockerfile to build the artifacts and then output a single small container based on the previous stages artifacts. 
 
 
 * Build | `docker build --tag server ./server`
@@ -26,18 +26,18 @@ In the example, we use a stage Dockerfile to build the artifacts and then output
 
 ## Cons
 * Slow as it redownloads all of the dependencies each iteration whenver the source changes (which is usually every time you need to build).
-* You could tag an intermediate builder as the base image, but then it becomes less useful to other projects as it may include libraries that are not required for your build and it bloats the buildedocker volume rm --force build-${USER}
-docker volume rm --force gradle-dependencies image. It would still have to download each library what was missing.
+* You could tag an intermediate builder as the base image, but then it becomes less useful to other projects as it may include libraries that are not required for that build and bloats the image.
 
 
 # Example 2 - Builder using a Docker Volume
-In the example, we use the an external Docker volume to hold all of the
+In the example, we use the an external Docker volume to hold all of the downloaded binaries and compiled artifacts. The example is more verbose than the first one so it gets its own page.
 
 [Builder Example Instructions](./builder/README.md)
 
 ## Pros
-* Fast as all the dependencies are downloaded to the folder
+* Fast as all the dependencies are downloaded to the folder and not downloaded again.
 
 ## Cons
-* The binary is in the volume and you have to extract it to use it.
+* The binary is in the volume and you have to extract it to use it or mount it into another container.
+* Requires the ability to manage docker volumes and understanding how the pieces fit together.
 
