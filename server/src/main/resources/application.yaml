@@ -1,0 +1,19 @@
+ spring:
+   datasource:
+     driver-class-name: org.postgresql.Driver
+     username: tgd_admin
+     password: tgd-password
+     url: jdbc:postgresql://datastore:5432/tgd_db
+   jpa:
+     properties:
+       hibernate:
+         # The SQL dialect makes Hibernate generate better SQL for the chosen database
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+         # Hibernate ddl auto (create, create-drop, validate, update)
+         ddl-auto: update
+     database-platform: org.hibernate.dialect.PostgreSQLDialect
+     show-sql: true
+   jackson:
+     serialization:
+       fail-on-empty-beans: false
+
