@@ -15,7 +15,22 @@ At the time of this writing I was running Ubuntu 16.4 and openjdk 14 and gradle 
 # Example 1 - Builder using a multi-stage Docker file
 In the example, we use a multi-stage Dockerfile to build the artifacts and then output a single small container based on the previous stages artifacts. 
 
+When you look at the `./server/Dockerfile` you can see stages
+   ```
+   FROM openjdk:14 AS binaries
+   
+   FROM binaries AS dependencies
+   
+   FROM dependencies AS builder
 
+   FROM openjdk:14-alpine AS app
+   ```
+Docker allows you to build up to any stage which would allow you to build just the 'binaries' stage. Or build the 'binaries' and 'dependencies' stages. You can see the 'dependencies' stage is based off the results of the 'binaries' stage. The really cool part is in the 'app' stage. It complete bases its stage off of a different base image, 'openjdk:14-alpine' and then copies in the app from the 'builder' stage.
+   ```
+   COPY --from=builder /source/build/libs/server-0.0.1-SNAPSHOT.jar ./app.jar
+   ```
+
+Run the proecess
 * Build | `docker build --tag server ./server`
 * Run | `docker run --rm server:latest -p 8080:8080`
 * Access | `curl -i -w '\n' http://localhost:8080/server/v1/acknowledge` 
@@ -40,4 +55,3 @@ In the example, we use the an external Docker volume to hold all of the download
 ## Cons
 * The binary is in the volume and you have to extract it to use it or mount it into another container.
 * Requires the ability to manage docker volumes and understanding how the pieces fit together.
-
